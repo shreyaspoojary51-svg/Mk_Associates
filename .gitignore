@@ -1,0 +1,14 @@
+node_modules/
+.next/
+.env*
+!.env.example
+*.tsbuildinfo
+qa-results/
+test-results/
+playwright-report/
+.vercel/
+# Restored automatically from checksummed, self-contained source bundles.
+public/images/*.webp
+public/images/*.mp4
+public/fonts/*.woff2
+public/design-brief-checklist.pdf

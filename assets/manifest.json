@@ -1,0 +1,147 @@
+{
+  "files": [
+    {
+      "path": "public/design-brief-checklist.pdf",
+      "sha256": "f8ab429e7789a6d8c1d171b61683569d607dc4d7f8db552a9e7cfb08c8e08b84",
+      "parts": [
+        "media-00.json"
+      ]
+    },
+    {
+      "path": "public/fonts/dm-sans.woff2",
+      "sha256": "9fea608a947e67020c33cad9a6fe3d60c54119dfb8cff87768a8117a15ed7543",
+      "parts": [
+        "media-01.json"
+      ]
+    },
+    {
+      "path": "public/fonts/instrument-serif-italic.woff2",
+      "sha256": "5a51946dfffa82972bc98745359c46761515641fda557c25116459a9f83da4a7",
+      "parts": [
+        "media-02.json"
+      ]
+    },
+    {
+      "path": "public/fonts/instrument-serif.woff2",
+      "sha256": "5eb09b5ac0e28b67c2f041c8ba6d244604ca0c0980d65912ab2d47fed84ddc31",
+      "parts": [
+        "media-03.json"
+      ]
+    },
+    {
+      "path": "public/images/film-poster.webp",
+      "sha256": "a3f57dd7b5589f7ba42ceb494e29ba6fec05333203d51cb34e3abe2228d0c8b3",
+      "parts": [
+        "media-04.json"
+      ]
+    },
+    {
+      "path": "public/images/hero.webp",
+      "sha256": "6d6b0e93db1eda2f29f46b98dd6f7528266f2690e8af5dce5b3a81f48f9de55e",
+      "parts": [
+        "media-05.json"
+      ]
+    },
+    {
+      "path": "public/images/kitchen.webp",
+      "sha256": "472059f4db4e822f02f948f718076ed915191ed4a93e40713cbc2598f8a46d62",
+      "parts": [
+        "media-06.json"
+      ]
+    },
+    {
+      "path": "public/images/material-brass.webp",
+      "sha256": "0114fb4c7b277e04d50919618af920f1114bc3d7cb5afb48fa28eb8e328c4b5d",
+      "parts": [
+        "media-07.json"
+      ]
+    },
+    {
+      "path": "public/images/material-linen.webp",
+      "sha256": "cfc3735f65a3723c955c5eaf5d137e16ea51b56f5dd46040b83aa8185c0b8090",
+      "parts": [
+        "media-08.json"
+      ]
+    },
+    {
+      "path": "public/images/material-stone.webp",
+      "sha256": "eb953b13c03a4d3dde2356be78b86b488462a49746426230da27b447f945ba46",
+      "parts": [
+        "media-09.json"
+      ]
+    },
+    {
+      "path": "public/images/material-wood.webp",
+      "sha256": "861c1c44a4d95960d5a25fd8c1375d9e5834a105068e899df6d9e4642ccbc327",
+      "parts": [
+        "media-10.json"
+      ]
+    },
+    {
+      "path": "public/images/project-1.webp",
+      "sha256": "fb511fd0976cd6349957a1b936f8ce58b1f5989bc5fc33deb71e53cadc226aa0",
+      "parts": [
+        "media-11.json"
+      ]
+    },
+    {
+      "path": "public/images/project-2.webp",
+      "sha256": "61938c595bb2ff711c3f94760bfb122c1c0ab9914b662b30159773d390aff4ca",
+      "parts": [
+        "media-12.json"
+      ]
+    },
+    {
+      "path": "public/images/project-3.webp",
+      "sha256": "8b945b4d4cd2077095dba54436582d30a65c1bf01aff351ad63378b8391cbf36",
+      "parts": [
+        "media-13.json"
+      ]
+    },
+    {
+      "path": "public/images/project-4.webp",
+      "sha256": "4aac2a56a17784e447b739ef616e98f6bb9cfb7a788dc70eea70750a4fb35a09",
+      "parts": [
+        "media-14.json"
+      ]
+    },
+    {
+      "path": "public/images/project-5.webp",
+      "sha256": "9edfeff0e0c0b939a31caa52ac9263216e2f585b383ab1880cc6b7a6f800e7b6",
+      "parts": [
+        "media-15.json"
+      ]
+    },
+    {
+      "path": "public/images/project-6.webp",
+      "sha256": "694b21db8da2cefc7d66873168cc3f776099e7907dc1052b92e452bc56e33ce9",
+      "parts": [
+        "media-16.json"
+      ]
+    },
+    {
+      "path": "public/images/project-7.webp",
+      "sha256": "a0d1af1e1d147e7cc8acf65dede35b62895c510347ac6b889faf7540556fdc74",
+      "parts": [
+        "media-17.json"
+      ]
+    },
+    {
+      "path": "public/images/project-8.webp",
+      "sha256": "3b2d2bdb32f7061653c15f1768e0645c758fc10cd44712c87d89e1f07cd43609",
+      "parts": [
+        "media-18.json"
+      ]
+    },
+    {
+      "path": "public/images/studio-film.mp4",
+      "sha256": "05e033046d3e0919f397fe6a60579cf6112771d4e1152112d89310babca52efa",
+      "parts": [
+        "media-19.json",
+        "media-20.json",
+        "media-21.json",
+        "media-22.json"
+      ]
+    }
+  ]
+}
