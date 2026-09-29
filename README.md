@@ -76,3 +76,7 @@ The implementation is original. The reference sites inspired pacing and interact
 ## What still requires real-world approval
 
 Approved portfolio photography and project facts; founder portraits/biographies; legal review; service pricing; business phone/email/address/social profiles; authenticated production email/Sheets/WhatsApp tests; domain; Vercel deployment; real Moto G4/Slow-4G LCP, INP and CLS acceptance testing. No ranking, traction or enquiry-volume outcome is guaranteed by a codebase.
+
+### Upload deployment limit
+
+Attachments are capped at **4 MB combined** so the supplied Vercel-targeted server action works beneath the platform’s 4.5 MB request limit. The original brief allowed up to 10 MB; that larger limit requires a direct-to-private-storage uploader and is not claimed by this build. See `docs/integrations.md`.

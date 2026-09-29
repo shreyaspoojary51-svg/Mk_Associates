@@ -1,90 +1,68 @@
-> Final deployment adjustment: the multipart upload cap is now 4 MB combined for Vercel compatibility. Historical checks below used the previous 10 MB local-development cap. The final cap and native-input reset are covered in the release regression. See integrations.md.
+# Conversion implementation — final handoff
 
-# Conversion implementation report
+## Outcome / owned files
 
-## Completed owned files
+Implemented estimator, room/palette/material configurator, four-step contact, actual PDF download, and production Resend + authenticated Sheets/private Drive delivery code. Source is frozen. No GitHub push; no package/global CSS/layout/home edits by this agent. Parent made final curated-label/room/allowance enhancements and production hosting cap decisions.
 
-- `src/app/estimator/page.tsx`
-- `src/app/configure/page.tsx`
-- `src/app/contact/page.tsx`
-- `src/app/contact/thank-you/page.tsx` (legacy redirect only)
-- `src/app/actions.ts`
-- `src/components/tools/{Estimator,Configurator,ContactForm,ProposalDownload,ProposalDocument,AntiSpam}.tsx`
-- `src/components/tools/{tools.module.css,session.ts,README.md}`
-- `src/lib/{estimate,lead-schema}.ts`
-- `tests/estimate.test.ts`
+Owned paths completed:
+- `src/app/{estimator,configure,contact}/**`, including legacy `/contact/thank-you` redirect.
+- `src/app/actions.ts`.
+- `src/components/tools/{Estimator,Configurator,ContactForm,ProposalDownload,ProposalDocument,AntiSpam}.tsx`.
+- `src/components/tools/{tools.module.css,session.ts,README.md}`.
+- `src/lib/{estimate,lead-schema}.ts`, `tests/estimate.test.ts`.
 
-No package, shared global CSS/layout/home, other agents' components or GitHub changes made. No invented production phone/email. All routes inherit parent main landmark and title template. Canonical contact completion route is `/thank-you?demo=1|0&receipt=UUID`; parent owns that page.
+Routes inherit parent's main landmark and title template (no nested main or duplicate suffix). Contact uses parent's canonical `/thank-you?demo=1|0&receipt=UUID`.
 
 ## Features
 
-Estimator: pure exported calculateEstimate; property types; essential/signature/bespoke INR2,500/3,800/5,200 per sq ft; area150–25,000; explicit optional Mumbai allowances; ±15% range; exact-sum10/30/35/20/5 milestones; indicative90–140 execution days. Prices/timing clearly nonbinding, exclude taxes/appliances/loose furniture/deposits. WhatsApp only if valid NEXT_PUBLIC_WHATSAPP_NUMBER; otherwise contact CTA only.
+Estimator: exported pure `calculateEstimate`; INR2,500/3,800/5,200 rates, BHK/commercial plus legacy property types, area150–25,000sqft; seven explicit Mumbai/project allowances; ±15% range; exact-sum10/30/35/20/5 milestones; indicative90–140execution days after sign-off/site readiness. Tax/appliance/loose furniture/deposit exclusions and nonquotation wording. WhatsApp URL only with valid configured number; otherwise contact fallback.
 
-Configurator: room/palette/material chips, reduced-motion-aware Framer Motion photographic collage with supplied project1–8 +hero, truthful inspiration-not-render label, sessionStorage restored and bounded16KiB UTF-8 before parse, contact-query summary and real downloadable PDF. Estimate also joins PDF if saved. No fake AI concierge.
+Configurator:5room choices including Café; palettes/materials; reduced-motion-aware Framer Motion photographic collage with supplied interiors/material imagery; honest reference-collage-not-render label. Choice sessionStorage restored, rawUTF8 bounded16KiB beforeJSON parse. URL presets `earth→Earth&olive/Walnut`, `stone→Monochrome/Stone`, `calm→Coastalcalm/Texturedplaster` override stored palette/material while retaining room. Unknown presets ignored. Contact-query summary bounded16KiB then2,000chars; exact known concierge intents prefill note only.
 
-Contact:4-step RHF/Zod, accessible validation/focus, explicit contact-only consent, honeypot, bounded fields, optional four JPG/PNG/WebP/PDF files <=10MB combined; server checks MIME and byte signatures/terminal markers. Server-side credentials, actual Resend API and actual Sheets/private Drive webhook, authenticated payload, explicit missing-configuration/demo and partial/error states. No email/notification delivery is claimed without a service confirmation. A receipt is not a booking. Demo explicitly sends/saves nothing. Partial delivery prevents immediate repeated submission.
+Contact:4-step RHF/Zod; stable control labels/descriptions/focus; explicit contact-only consent, honeypot, bounded input, optional4 JPG/PNG/WebP/PDF references. **CURRENT DEPLOYED CAP:4MB combined (also max4MB perfile)**. Parent reduced the originally requested10MB ceiling because hosted function request bodies have a lower hard limit; Next's12MB parser config does not override that. Larger10MB support requires a future direct-to-private-storage upload adapter; none is falsely claimed implemented. Client/server/errorcopy and receiver example align to4MB. Server validates MIME and byte signatures/terminal markers; not antivirus/deep content scanning.
 
-Proposal email: **will not send arbitrary-recipient mail without genuine Turnstile**; action/hostname/success checked server-side. PDF download works regardless.3/hour IP and3/hour email+IP, plus general6/10min action limit. Optional-email field disabled if public CAPTCHA key absent. Resend-accepted email is not guaranteed inbox delivery. CAPTCHA token never persisted in Sheets or mailed lead records.
+PDF: actual serveraction/react-pdf file, ASCII INR currency (no unsupported rupee glyph), readable11ptbody and10ptnote/footer. All7addons+25,000sqft+Café/fullbrief fits oneA4page via compact2ptrowpadding only when>5addons. Normal rows4pt. Rendered and visually checked with accurate range/milestones and no overlap/orphan note. Optional email is genuinely Turnstile-gated; never reported as delivered without provider confirmation.
 
-## Exact env contract (parent can copy into docs/integrations.md)
+## Production env / exact receiver contract
 
-- NEXT_PUBLIC_WHATSAPP_NUMBER: international numeric number, optional leading+,7–14 digits after first digit (8–15 overall); no spaces. Invalid/missing => no WhatsApp link.
-- RESEND_API_KEY: private key.
-- RESEND_FROM_EMAIL: verified sender address/domain, no hardcoded default.
-- LEAD_NOTIFICATION_EMAIL: real recipient for studio enquiries. For lead email all3 required. For PDF email key/from pair **plus** Turnstile key pair and successful verification required.
-- SHEETS_WEBHOOK_URL: private HTTPS POST endpoint; bearer auth + server-only `webhookToken` JSON property.
-- SHEETS_WEBHOOK_SECRET: private shared token. Receiver must NOT store or return it.
-- NEXT_PUBLIC_TURNSTILE_SITE_KEY + TURNSTILE_SECRET_KEY: real matched Cloudflare keys, registered deployment hostnames. Action `project_enquiry` for contact, `proposal_email` for PDF. Incomplete pair => contact fails closed; PDF still downloads but email is refused.
+Private credentials only in serveractions, never NEXT_PUBLIC or browser responses:
+- `NEXT_PUBLIC_WHATSAPP_NUMBER`: public optional international digits, optional leading+,8–15digits total. Invalid/missing means no WhatsApp URL.
+- `RESEND_API_KEY`: private key.
+- `RESEND_FROM_EMAIL`: real verified sender, no invented default.
+- `LEAD_NOTIFICATION_EMAIL`: real studio enquiry recipient. All3 required for leadmail. PDFmail uses key/from plus genuine Turnstile verification; studio recipient not required for PDF.
+- `SHEETS_WEBHOOK_URL`: private HTTPS endpoint.
+- `SHEETS_WEBHOOK_SECRET`: shared private token.
+- `NEXT_PUBLIC_TURNSTILE_SITE_KEY` + `TURNSTILE_SECRET_KEY`: matched actual Cloudflare keys and allowed deployment hostnames. Contact action=`project_enquiry`; PDFemail action=`proposal_email`. Server validates success/action/Origin hostname. Incomplete pair fails contact closed; PDF download remains available, email refused.
 
-Webhook JSON: `{ webhookToken, receiptId, submittedAt, name, email, phone, propertyType, location, area, budget, timeline, message, summary, consent:true, attachments:[{filename,contentType,base64}] }`. Authentication also `Authorization: Bearer SECRET`. Success must be HTTP2xx + parsedJSON `{ok:true}` **after durable persistence**, not just200. Non-Google redirects rejected. AppsScript302/303 content redirect is followed only to HTTPS `*.googleusercontent.com` with a separateGET and no forwarded credentials/body.
+Webhook: POST JSON `{webhookToken,receiptId,submittedAt,name,email,phone,propertyType,location,area,budget,timeline,message,summary,consent:true,attachments:[{filename,contentType,base64}]}` plus `Authorization: Bearer SECRET`. Receiver must never store/return token. HTTP2xx alone is not success; parsedJSON `{ok:true}` required only after durable persistence. Other redirects rejected; AppsScript302/303 only to HTTPS `*.googleusercontent.com`, followed with a separateGET and no forwarded credentials/body.
 
-`src/components/tools/README.md` includes complete deployable AppsScript doPost receiver for Sheets + private Drive uploads with script-property auth, safe spreadsheet cell prefixing, file limits, idempotent receipt check/lock, private file links and failure cleanup. Parent can reuse this in integration docs. AppsScript requires allow-public webapp policy because handler handles shared-secret authentication. Credentials never browser-visible.
+`src/components/tools/README.md` contains complete runnable AppsScript handler: Script Properties `SHEET_ID`, `WEBHOOK_SECRET`, `UPLOAD_FOLDER_ID`; authenticated WebApp, safe spreadsheet cell prefixing, private Drive files,4MB limit, receipt idempotency/lock, failure cleanup. Deploy executed as owner and authenticated by shared token; allow-public WebApp may be blocked by workspace policy. Alternative authenticated gateway must implement same contract. Keep folder private. Parent may copy these exact env/contract notes into docs/integrations.md.
 
-No configured delivery => demo. Incomplete config =>error. Configured calls all accepted =>sent. Some accepted=>partial clearly described and resubmit disabled. None accepted=>error, no success imitation.
+## Truthful modes / safety
 
-## Operational requirements and limits
+- No delivery config→explicit demo receipt; no email/enquiry/file saved or sent.
+- Incomplete config→error, not false demo-success.
+- Complete configured service(s)→actual Resend/webhook calls. Mail success only after Resend ID; inbox delivery not guaranteed. Webhook success only durable acknowledgement.
+- One service accepted and another failed→explicit partial receipt + repeat submission disabled. None confirmed→error, no fake notification claim.
+- PDF generation is real without email. Email copies refused without valid Turnstile, limited3/hour/IP AND3/hour/email+IP, plus general6actions/10min. UI disables email entry when public verification key absent. Failed/unconfigured/rate-limited mail reported clearly; PDF still downloads.
+- Next ServerActions provide Origin/Host CSRF protection. Honeypot and hashedIP in-memory limits are best effort, not distributed/durable. Use trusted proxy headers, production WAF/distributed limits and genuine Turnstile. Add receiver malware scanning/retention policy as needed; never serve uploaded content inline as trusted.
+- No contact PII persistence in browser storage or server logs; only design/estimate choices stored. No secret/PII/file payload logs. Turnstile tokens omitted from mail/Sheet record.
+- Node runtime; no live Resend/Sheets/Drive/Turnstile credentials were tested or provisioned. Deployment owner must supply real credentials/domain/receiver/privacy disclosures. Integration is working production code, not a delivery stub.
 
-- Next Node runtime; parent already set serverActions12mb, required for10MB upload.
-- Per-instance hashedIP limiter is best effort, NOT distributed/durable. Add platform/WAF rate limits across instances; trust forwardedIP headers only behind controlled proxy. Turnstile is required for PDF email and recommended for contact.
-- File signatures are not antivirus scanning. Add receiver malware scanning and retention/access policy for sensitive deployments; never serve uploads inline as trusted content. Optional Turnstile introduces Cloudflare and should be reflected in privacy disclosure.
-- Only choices in sessionStorage; PII fields not locally persisted. Contact summary query bounded16KiB then2000characters. Never log payloads/files/secrets.
-- No live Resend, Sheets, Drive or Turnstile credential run was performed. Production credentials and verified-domain setup remain deployment-owner responsibility. This is real integration code, not a notification stub.
+## Verification / real bug fixes
 
-## Validation
+PASS: final strictTS, owned ESLint zero warnings, nodeassert/tsx estimate tests (tiers/range/addons/dedup/bounds/nonfinite/decimal/milestone sums/configured-onlyWhatsApp).
 
-- `pnpm exec tsc --noEmit`: passed at final owned-code check (parent's earlier unrelated admin import error was resolved).
-- `pnpm exec eslint` owned paths `--max-warnings0`: passed.
-- `pnpm exec tsx tests/estimate.test.ts`: passed. Covers tiers, +/-range, exactmilestone sums, addons/deduplication, bounds/nonfinite/decimal area, configured-only WhatsApp.
-- First remote-CDP routeQA captured all3 desktop1440 and390 mobile, light/dark; desktop/lightmobile visually inspected all3. No nested main/title duplication/owned overflow seen. Dark selected chip white-on-white discovered and fixed via theme-paper text token; dark stepper/caption also tokenized.
-- Photographic collage loaded in initial desktop/mobile captures. FinalQA helper forces allimages eager+decode before fullpage capture.
-- Real PDF serveraction returned success and created browserdownload; remoteCDP download.saveAs failed because remote browserfile is not sandboxfile. QA helper changed to capture actual Blob bytes for extraction, not a product defect.
-- Final multi-step UI/PDF/demo smoke was blocked when parent3000 preview stopped, before these flows completed. Do not claim final browser smoke passed yet. Script `/data/conversion-qa.cjs` supports isolated context/tab, localhostproxy, image decoding, PDFbytes, storage/query restoration, validation and **demo-only** submission; skips submission if envdelivery config present. Closes only created pages/context.
-- Existing captures `/data/conversion-{estimator,configure,contact}-{desktop,mobile,dark-desktop,dark-mobile}.png`; final script writes requested `/data/tools-*.png` when preview is running.
-- Own3106 preview descendants explicitly terminated; no parent preview/process intentionally stopped.
+PASS: fresh production `/data/conversion-qa-results.json`:
+- Physical clicks through all4steps, initial validation, correctedphone progression, explicit consent validation and canonical demo receipt.
+- Real serveraction PDFBlob **4028bytes**, actual download, pdftotext INRvalues verified; zeroemail/webhook sends.
+- All3curatedURLpresets, restoredbrief, knownintentprefill, oversized/malformed session fallback.
+- Explicit blockedStorage(SecurityError) fallback notice, estimator default1000,0JSerrors.
+- Three routes each1main/one title suffix,0pageerrors,0brokenimages,0desktop-or390overflow.
+- All12light/dark desktop1440/mobile390 screenshots individually visually inspected; additional validation/steps2–4/demo receipts inspected. Files `/data/tools-*.png`. Real max7PDF `/data/conversion-pdf-max7-fixed.png` inspected onepage with no overlaps/footer collision.
 
-## Final requested deep-link/accessibility fixes
+Fixed actual production UX issue: onTouched blur cleared lastphone error and shifted Continue between mouse-down/up, losing firstclick. Changed validationonChange, stable separate label/id and permanent20px namederrorlines with margin compensation. Fresh physical smoke passed after fix.
 
-- `/configure?palette=earth|stone|calm` selects curated Earth & olive/Walnut, Monochrome/Stone, or Coastal calm/Textured plaster direction; unknown values are ignored rather than used as arbitrary state. Known URL presets intentionally override stored palette/material while retaining the room.
-- `/contact?intent=` prefills the project note only for the three exact known concierge prompts. Input is bounded before use; no arbitrary injection/prefill occurs.
-- Unconditional aria-describedby references now always have matching area/consent/upload/estimate note IDs. PDF money uses ASCII `INR`, never unsupported rupee glyph with built-in Helvetica.
+Fixed actual attachment UX issue found by no-submit QA: Remove cleared Reactstate but nativefileinput stillheldfile; rejected optionalfile had noClear. Added uploadref/nativevalue reset/focus return; Remove also shown for errors. This enables samefile reselection and rejection recovery. **Final upload-only regression pending parent's rebuilt production startup**; script `/data/conversion-upload-qa.cjs` expects afterRemove0, oversizeClearButton1, cleared rejection/nativecontrol and physicalContinue to review. No submission/email in that regression. All source/static checks after resetfix passed. Do not claim this last runtime regression passed until its final log does.
 
-## Actual PDF renderer verification
-
-Native ESM renderer test generated `/data/conversion-test-brief.pdf`, extracted text with pdftotext and confirmed ASCII INR values, accurate range/milestone currency, and90–140day/+/-15% wording. Rendered and inspected the actual PDF. Found and fixed inherited line-height overlap and an orphan scope note; final normal brief is a clean single A4 page with readable11pt body and9pt note. PNG `/data/conversion-pdf-preview.png` inspected with no overlap. This test sends no email/webhook. TSX CJS test runner hit a dependency-export-mode error, so the renderer was tested using native ESM entry point, matching Next's ESM bundling.
-Maximum-input PDF QA also passed:25,000sqft/Bespoke/allfiveaddons+fullbrief fits oneA4page; `/data/conversion-pdf-max-preview.png` inspected, no text/footer overlap, accurate INR crores/lakhs and milestone sums. Actual report/code is ready for parent's production rebuild and final route smoke.
-
-## Final frozen seven-addon PDF result (supersedes earlier five-addon note)
-
-Parent's final schema adds Smart lighting/Art & soft styling/Café/BHK labels and updated budget bands. Seven-addon extreme case was rendered and found a note-only second page; fixed via conditional2pt row padding for>5addons (normal4pt otherwise). Body remains11pt and scope note/footer are now10pt minimum as requested. Final25,000sqft+Bespoke+all7addons+Café brief fits **one A4 page**, rendered `/data/conversion-pdf-max7-fixed.png` inspected: no overlaps, clear footer separation, accurate INR range/milestones and truthful nonquotation note. This was the only final postfreeze bugfix; no API/schema behavior changed.
-
-## Production smoke finding and mandatory contact fix
-
-Physical Continue click after correcting an initially invalid phone could be lost: onTouched validation clears a blur error, removing the error row and shifting the button between mouse-down/up. Explicit React hook inspection showed step0/noerrors; a subsequent programmaticclick advanced, proving the layout/event race. Fixed ContactForm to validateonChange, use separate stable label/control associations and permanently reserved20px error lines for named fields (with compensating zero bottommargin, nearly unchanged layout). Every named aria-describedby now targets an always-present span; label names no longer include error messages. Parent rebuild is required for this mandatory final fix.
-
-Production12screenshots (`/data/tools-{estimator,configure,contact}-{desktop,mobile,dark-desktop,dark-mobile}.png`) visually inspected all: refined studio theme, correct dark selectedchips/stepper/caption contrast, no owned overlap/overflow, and decoded reference photography. Actual browser PDF download produced4054bytes and pdftotext extracted INR53,25,250–72,04,750 for1200sqft/Bespoke+society, with accurate milestones. No email/webhook invoked. Demo flow remains to retest on rebuilt ContactForm, rather than falsely claiming this physicalclick failure passed.
-
-## Corrected production smoke: PASS
-
-Fresh production tested with physical clicks through all4steps including initial validation and corrected-phone Continue: passed. `/data/conversion-qa-results.json` records1main perroute, no duplicate title suffix, 0pageerrors/0brokenimages/0desktop-or390overflow, all3curatedURL presets selected, savedbriefrestored, knownintentprefilled, oversize/malformed sessionfallback, blockedStorage SecurityError fallback with0JSerrors and explicit configurator warning. Real production PDF Blob was **4028bytes** and downloaded with no email; receipt redirected to canonical `/thank-you?demo=1&receipt=...`, explicitly demo. No real external notification sent. All12newlight/dark desktop390captures saved, plus validation/steps2–4/demo-state captures.
-
-Additional attachment QA (no submit) revealed nativefilecontrol stillheld1file after UI Remove, and oversizedoptionalfile offered no clear control. Final minimal ContactForm fix adds an uploadref, clears nativevalue and restoresfocus on Remove, and shows Remove for errors aswell as accepted files. This lets an optional oversized/wrong-type attachment be removed before continuing, and permits reselecting the same file. State/serverdelivery behavior unchanged. Parent rebuild/uploadregression required for this last necessaryfix; primaryflow alreadypasses.
+QA uses isolated CDP contexts/tabs, real localhostproxy fetches (not mocked backend), closes only created pages/context and never alters parentserver. Own temporary3106 preview descendants terminated earlier. No more source changes planned.
