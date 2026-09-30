@@ -30,7 +30,7 @@
     },
     {
       "path": "public/images/film-poster.webp",
-      "sha256": "a3f57dd7b5589f7ba42ceb494e29ba6fec05333203d51cb34e3abe2228d0c8b3",
+      "sha256": "29dea46e9259a78072f105282dddafb53bdff477fbabe87b57e6f203cfbb2e3f",
       "parts": [
         "media-04.json"
       ]
@@ -135,12 +135,16 @@
     },
     {
       "path": "public/images/studio-film.mp4",
-      "sha256": "05e033046d3e0919f397fe6a60579cf6112771d4e1152112d89310babca52efa",
+      "sha256": "05662a725b88d7082f3f4e9e5a7113656af6d3b373bdf62bfe8d7de333638a3c",
       "parts": [
         "media-19.json",
         "media-20.json",
         "media-21.json",
-        "media-22.json"
+        "media-22.json",
+        "media-23.json",
+        "media-24.json",
+        "media-25.json",
+        "media-26.json"
       ]
     }
   ]
