@@ -1,7 +1,10 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve, dirname, sep } from "node:path";
+import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
-const root = resolve(import.meta.dirname, "..");
+const currentDir =
+  import.meta.dirname ?? dirname(fileURLToPath(import.meta.url));
+const root = resolve(currentDir, "..");
 const manifest = JSON.parse(
   readFileSync(resolve(root, "assets/manifest.json"), "utf8"),
 );

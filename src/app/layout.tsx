@@ -28,7 +28,11 @@ const sans = localFont({
   display: "swap",
   weight: "100 1000",
 });
-const site = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const site =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "http://localhost:3000");
 const launchReady =
   process.env.NEXT_PUBLIC_LAUNCH_READY === "true" &&
   site.startsWith("https://") &&

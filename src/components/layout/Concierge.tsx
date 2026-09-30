@@ -113,7 +113,8 @@ export default function Concierge() {
         onClick={() => setShowCookie(!showCookie)}
         aria-expanded={showCookie}
       >
-        Privacy choices
+        <span className="cookie-dot" aria-hidden="true" />
+        <span>Privacy choices</span>
       </button>
       {showCookie && (
         <div className="cookie-note" role="region" aria-label="Privacy choices">

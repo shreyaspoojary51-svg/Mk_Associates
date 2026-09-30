@@ -27,5 +27,14 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/configurator",
+        destination: "/configure",
+        permanent: true,
+      },
+    ];
+  },
 };
 export default nextConfig;
