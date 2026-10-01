@@ -7,10 +7,6 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import ProposalDocument from "@/components/tools/ProposalDocument";
 import { leadSchema, proposalSchema } from "@/lib/lead-schema";
 
-// Static standard-font imports to guarantee Next.js NFT dependency tracing on Vercel Serverless
-import "pdfkit/standard-fonts/Helvetica";
-import "pdfkit/standard-fonts/HelveticaBold";
-
 export type LeadResult = {
   status: "sent" | "demo" | "partial" | "error";
   message: string;

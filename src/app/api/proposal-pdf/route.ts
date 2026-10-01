@@ -5,10 +5,6 @@ import ProposalDocument from "@/components/tools/ProposalDocument";
 import { proposalSchema, type DesignBrief } from "@/lib/lead-schema";
 import type { EstimateInput } from "@/lib/estimate";
 
-// Static standard-font imports to guarantee Next.js NFT dependency tracing on Vercel Serverless
-import "pdfkit/standard-fonts/Helvetica";
-import "pdfkit/standard-fonts/HelveticaBold";
-
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
