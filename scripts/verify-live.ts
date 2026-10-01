@@ -1,8 +1,9 @@
 import { chromium } from "@playwright/test";
 import { mkdir } from "node:fs/promises";
-import { resolve } from "node:path";
 
-const ARTIFACT_DIR = "C:/Users/praja/.gemini/antigravity/brain/df31c88f-9eb4-42b0-96ae-9d1ffa6a8569/verification";
+const ARTIFACT_DIR =
+  process.env.ARTIFACT_DIR ||
+  "C:/Users/praja/.gemini/antigravity/brain/df31c88f-9eb4-42b0-96ae-9d1ffa6a8569/verification";
 const BASE_URL = "https://mk-associates-omega.vercel.app";
 
 async function run() {

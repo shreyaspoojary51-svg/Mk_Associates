@@ -1,7 +1,7 @@
 "use client";
 import { useState, useTransition } from "react";
 import { downloadProposal } from "@/app/actions";
-import { whatsappLink, type EstimateInput } from "@/lib/estimate";
+import { whatsappShareUrl, type EstimateInput } from "@/lib/estimate";
 import type { DesignBrief } from "@/lib/lead-schema";
 import s from "./tools.module.css";
 import AntiSpam from "./AntiSpam";
@@ -173,7 +173,7 @@ export default function ProposalDownload({
         </button>
         <a
           className={`button-outline ${s.secondary}`}
-          href={whatsappLink(
+          href={whatsappShareUrl(
             brief
               ? `Hello MK Associates, I configured my interior planning brief on your website:\n• Room: ${brief.room}\n• Palette: ${brief.palette}\n• Material: ${brief.material}${estimate ? `\n• Area: ${estimate.area} sq ft (${estimate.tier.toUpperCase()})` : ""}\n\nI have the 1-page PDF ready. I'd love to discuss this with your team!`
               : `Hello MK Associates, I configured an interior planning estimate on your website${estimate ? ` for ${estimate.area} sq ft (${estimate.tier.toUpperCase()})` : ""}. I'd love to discuss this with your team!`,
