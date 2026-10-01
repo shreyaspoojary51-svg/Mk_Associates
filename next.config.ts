@@ -4,9 +4,18 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: process.cwd(),
   serverExternalPackages: ["@react-pdf/renderer", "pdfkit"],
   outputFileTracingIncludes: {
-    "/api/proposal-pdf": ["./node_modules/pdfkit/js/standard-fonts/*"],
-    "/configure": ["./node_modules/pdfkit/js/standard-fonts/*"],
-    "/estimator": ["./node_modules/pdfkit/js/standard-fonts/*"],
+    "/api/proposal-pdf": [
+      "./node_modules/**/pdfkit/js/standard-fonts/**/*",
+      "./public/fonts/**/*",
+    ],
+    "/configure": [
+      "./node_modules/**/pdfkit/js/standard-fonts/**/*",
+      "./public/fonts/**/*",
+    ],
+    "/estimator": [
+      "./node_modules/**/pdfkit/js/standard-fonts/**/*",
+      "./public/fonts/**/*",
+    ],
   },
   experimental: {
     cpus: 2,

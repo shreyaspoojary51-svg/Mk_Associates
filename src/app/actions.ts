@@ -1,10 +1,15 @@
 "use server";
+import React from "react";
 import { randomUUID, createHash } from "node:crypto";
 import { headers } from "next/headers";
 import { Resend } from "resend";
 import { renderToBuffer } from "@react-pdf/renderer";
 import ProposalDocument from "@/components/tools/ProposalDocument";
 import { leadSchema, proposalSchema } from "@/lib/lead-schema";
+
+// Static standard-font imports to guarantee Next.js NFT dependency tracing on Vercel Serverless
+import "pdfkit/standard-fonts/Helvetica";
+import "pdfkit/standard-fonts/HelveticaBold";
 
 export type LeadResult = {
   status: "sent" | "demo" | "partial" | "error";
@@ -374,7 +379,11 @@ export async function downloadProposal(
         error: parsed.error.issues[0]?.message || "Please check your brief.",
       };
     const { estimate, brief, email: recipient } = parsed.data;
-    const pdf = await renderToBuffer(ProposalDocument({ estimate, brief }));
+    const pdf = await renderToBuffer(
+      React.createElement(ProposalDocument, { estimate, brief }) as unknown as Parameters<
+        typeof renderToBuffer
+      >[0],
+    );
     let emailStatus: ProposalResult["emailStatus"] = "not-requested";
     if (recipient) {
       const config = emailConfig();
