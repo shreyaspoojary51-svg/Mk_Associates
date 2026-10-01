@@ -2,7 +2,12 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   outputFileTracingRoot: process.cwd(),
-  serverExternalPackages: ["@react-pdf/renderer"],
+  serverExternalPackages: ["@react-pdf/renderer", "pdfkit"],
+  outputFileTracingIncludes: {
+    "/api/proposal-pdf": ["./node_modules/pdfkit/js/standard-fonts/*"],
+    "/configure": ["./node_modules/pdfkit/js/standard-fonts/*"],
+    "/estimator": ["./node_modules/pdfkit/js/standard-fonts/*"],
+  },
   experimental: {
     cpus: 2,
     webpackMemoryOptimizations: true,
