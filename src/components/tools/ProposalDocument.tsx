@@ -8,22 +8,48 @@ import {
 } from "@/lib/estimate";
 import type { DesignBrief } from "@/lib/lead-schema";
 
+import path from "node:path";
+import { existsSync } from "node:fs";
+
 // Disable automatic syllabic hyphenation: prevents awkward breaks and bypasses external hyphenate dictionary exports
 Font.registerHyphenationCallback((word) => [word]);
+
+const localRegular = path.resolve(process.cwd(), "public/fonts/Roboto-Regular.ttf");
+const localBold = path.resolve(process.cwd(), "public/fonts/Roboto-Medium.ttf");
+
+Font.register({
+  family: "Roboto",
+  fonts: [
+    {
+      src:
+        typeof window === "undefined" && existsSync(localRegular)
+          ? localRegular
+          : "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Regular.ttf",
+      fontWeight: "normal",
+    },
+    {
+      src:
+        typeof window === "undefined" && existsSync(localBold)
+          ? localBold
+          : "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Medium.ttf",
+      fontWeight: "bold",
+    },
+  ],
+});
 
 const styles = StyleSheet.create({
   page: {
     padding: 44,
     backgroundColor: "#faf8f4",
-    fontFamily: "Helvetica",
+    fontFamily: "Roboto",
     color: "#252e29",
     fontSize: 11,
     lineHeight: 1.5,
   },
-  brand: { fontSize: 12, letterSpacing: 3, marginBottom: 28 },
+  brand: { fontSize: 12, letterSpacing: 3, marginBottom: 28, fontWeight: "bold" },
   title: {
-    fontSize: 30,
-    fontFamily: "Times-Roman",
+    fontSize: 26,
+    fontWeight: "bold",
     lineHeight: 1.2,
     marginBottom: 12,
   },
@@ -31,13 +57,14 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 10,
     letterSpacing: 2,
+    fontWeight: "bold",
     marginTop: 16,
     marginBottom: 8,
     lineHeight: 1.3,
   },
   total: {
     fontSize: 22,
-    fontFamily: "Times-Roman",
+    fontWeight: "bold",
     lineHeight: 1.2,
     marginBottom: 10,
   },
@@ -59,9 +86,8 @@ const styles = StyleSheet.create({
     lineHeight: 1.4,
   },
 });
-// Helvetica does not include the rupee glyph: explicit INR avoids missing glyphs in PDF.
 const money = (n: number) =>
-  `INR ${new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(n)}`;
+  `₹${new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(n)}`;
 export default function ProposalDocument({
   estimate,
   brief,
