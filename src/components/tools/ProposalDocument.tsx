@@ -1,5 +1,5 @@
 import React from "react";
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Font } from "@react-pdf/renderer";
 import {
   calculateEstimate,
   TIERS,
@@ -7,6 +7,10 @@ import {
   type EstimateInput,
 } from "@/lib/estimate";
 import type { DesignBrief } from "@/lib/lead-schema";
+
+// Disable automatic syllabic hyphenation: prevents awkward breaks and bypasses external hyphenate dictionary exports
+Font.registerHyphenationCallback((word) => [word]);
+
 const styles = StyleSheet.create({
   page: {
     padding: 44,

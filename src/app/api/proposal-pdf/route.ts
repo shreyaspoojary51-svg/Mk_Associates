@@ -1,3 +1,4 @@
+import React from "react";
 import { NextRequest, NextResponse } from "next/server";
 import { renderToBuffer } from "@react-pdf/renderer";
 import ProposalDocument from "@/components/tools/ProposalDocument";
@@ -19,7 +20,8 @@ export async function POST(req: NextRequest) {
     }
 
     const { estimate, brief } = parsed.data;
-    const pdf = await renderToBuffer(ProposalDocument({ estimate, brief }));
+    const element = React.createElement(ProposalDocument, { estimate, brief });
+    const pdf = await renderToBuffer(element as unknown as Parameters<typeof renderToBuffer>[0]);
 
     return new NextResponse(pdf as unknown as BodyInit, {
       status: 200,
@@ -31,9 +33,10 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (err) {
+    const message = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
     console.error("API proposal-pdf POST error:", err);
     return NextResponse.json(
-      { ok: false, error: "Failed to generate planning brief PDF." },
+      { ok: false, error: "Failed to generate planning brief PDF.", details: message },
       { status: 500 }
     );
   }
@@ -63,26 +66,11 @@ export async function GET(req: NextRequest) {
           }
         : undefined;
 
-    if (!brief && !estimate) {
-      // Default sample brief if none provided
-      const defaultDoc = ProposalDocument({
-        brief: {
-          room: "Living room",
-          palette: "Warm neutrals",
-          material: "Natural oak",
-        },
-      });
-      const pdf = await renderToBuffer(defaultDoc);
-      return new NextResponse(pdf as unknown as BodyInit, {
-        headers: {
-          "Content-Type": "application/pdf",
-          "Content-Disposition": 'attachment; filename="mk-associates-planning-brief.pdf"',
-        },
-      });
-    }
-
-    const doc = ProposalDocument({ estimate, brief });
-    const pdf = await renderToBuffer(doc);
+    const element = React.createElement(ProposalDocument, {
+      estimate,
+      brief: brief || { room: "Living room", palette: "Warm neutrals", material: "Natural oak" },
+    });
+    const pdf = await renderToBuffer(element as unknown as Parameters<typeof renderToBuffer>[0]);
 
     return new NextResponse(pdf as unknown as BodyInit, {
       status: 200,
@@ -94,9 +82,10 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (err) {
+    const message = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
     console.error("API proposal-pdf GET error:", err);
     return NextResponse.json(
-      { ok: false, error: "Failed to generate planning brief PDF." },
+      { ok: false, error: "Failed to generate planning brief PDF.", details: message },
       { status: 500 }
     );
   }
