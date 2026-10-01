@@ -3,7 +3,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const VERIFY_DIR = resolve(process.cwd(), "verification-results");
-const BASE = "http://localhost:3000";
+const BASE = process.env.TEST_BASE_URL || "http://localhost:3000";
 
 async function main() {
   await mkdir(VERIFY_DIR, { recursive: true });
