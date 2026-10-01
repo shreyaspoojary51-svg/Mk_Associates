@@ -6,7 +6,7 @@ import { Intro, CTA, ogImage } from "../work/_components/Editorial";
 export const metadata: Metadata = {
   title: "Mumbai neighbourhoods",
   description:
-    "Explore interior planning for Andheri West, Bandra West, Juhu and Powai. Four neighbourhoods, four distinct design considerations.",
+    "Explore interior planning for Andheri West, Lokhandwala, Bandra West, Juhu and Powai. Five neighbourhoods, five distinct design considerations.",
   alternates: { canonical: "/locations" },
   openGraph: { images: [ogImage("Mumbai neighbourhoods")] },
 };

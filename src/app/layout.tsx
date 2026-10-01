@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import Header from "@/components/layout/Header";
 import MarketingOnly from "@/components/layout/MarketingOnly";
@@ -54,6 +54,12 @@ export const metadata: Metadata = {
     siteName: "MK Associates",
     images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
   },
+};
+export const viewport: Viewport = {
+  themeColor: "#f6f3ee",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
 };
 export default function RootLayout({
   children,

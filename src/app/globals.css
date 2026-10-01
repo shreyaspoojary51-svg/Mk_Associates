@@ -264,9 +264,8 @@ a:hover .image-wrap img {
 }
 .site-header.is-scrolled {
   height: 76px;
-  background: color-mix(in srgb, var(--paper) 92%, transparent);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: var(--paper);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
 }
 .wordmark {
   display: flex;

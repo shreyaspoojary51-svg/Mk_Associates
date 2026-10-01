@@ -371,6 +371,30 @@ export const localities: Locality[] = [
     ],
   },
   {
+    slug: "lokhandwala",
+    name: "Lokhandwala",
+    title: "High-density living, deeply personal spaces.",
+    description:
+      "Interior planning for Lokhandwala Complex apartments—balancing vibrant neighborhood energy with acoustic quiet, smart storage and lift logistics.",
+    introduction:
+      "Lokhandwala Complex in Andheri West represents dynamic Mumbai living at its densest and most energetic. Between the bustling markets, lively backstreets and multi-tower gated societies, a Lokhandwala home needs to be an acoustic sanctuary. We plan interiors around society lift rules, compact service shafts and intelligent storage runs that leave rooms breathing.",
+    image: "/images/project-1.webp",
+    priorities: [
+      {
+        title: "Acoustic separation & street calm",
+        text: "Double-glazed fenestration, acoustic fabric panelling and dampening door seals shield your living spaces from the vibrant market hum and street traffic.",
+      },
+      {
+        title: "Society lift & renovation coordination",
+        text: "Lokhandwala societies enforce strict delivery windows, service lift dimensions and limited noisy work hours. We map logistics before work begins.",
+      },
+      {
+        title: "Integrated storage that lets rooms breathe",
+        text: "Full-height joinery recessed into architectural niches doubles storage capacity without intruding on natural light or circulation pathways.",
+      },
+    ],
+  },
+  {
     slug: "bandra-west",
     name: "Bandra West",
     title: "Character, without the compromise.",

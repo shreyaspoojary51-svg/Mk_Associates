@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   outputFileTracingRoot: process.cwd(),
+  serverExternalPackages: ["@react-pdf/renderer"],
   experimental: {
     cpus: 2,
     webpackMemoryOptimizations: true,
@@ -32,6 +33,11 @@ const nextConfig: NextConfig = {
       {
         source: "/configurator",
         destination: "/configure",
+        permanent: true,
+      },
+      {
+        source: "/locations/bandra",
+        destination: "/locations/bandra-west",
         permanent: true,
       },
     ];

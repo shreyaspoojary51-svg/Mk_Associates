@@ -8,7 +8,7 @@ import {
   estimateInputSchema,
   type DesignBrief,
 } from "@/lib/lead-schema";
-import type { EstimateInput } from "@/lib/estimate";
+import { whatsappLink, type EstimateInput } from "@/lib/estimate";
 import ProposalDownload from "./ProposalDownload";
 import s from "./tools.module.css";
 import { readSessionJSON } from "./session";
@@ -309,6 +309,16 @@ export default function Configurator({
               >
                 Explore a budget ↗
               </Link>
+              <a
+                className={`button-outline ${s.secondary}`}
+                href={whatsappLink(
+                  `Hello MK Associates, I configured my design direction on your website:\n\n• Room: ${brief.room}\n• Palette: ${brief.palette}\n• Material: ${brief.material}\n\nI have our planning PDF ready. I'd love to discuss this with your team!`,
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Share brief on WhatsApp ↗
+              </a>
             </div>
             <ProposalDownload brief={brief} estimate={estimate} />
             <p className={`note ${s.note}`} role="status">

@@ -35,3 +35,47 @@ for (const item of manifest.files) {
 console.log(
   `Restored/verified ${manifest.files.length} self-contained assets.`,
 );
+
+// Patch @react-pdf/hyphenate exports if needed for Node.js / Vercel CJS compatibility
+try {
+  const { readdirSync } = await import("node:fs");
+  function patchHyphenate(dir) {
+    if (!existsSync(dir)) return;
+    try {
+      const entries = readdirSync(dir, { withFileTypes: true });
+      for (const entry of entries) {
+        const full = resolve(dir, entry.name);
+        if (entry.isDirectory()) {
+          if (entry.name === "hyphenate" && dir.endsWith("@react-pdf")) {
+            const pkgPath = resolve(full, "package.json");
+            if (existsSync(pkgPath)) {
+              const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
+              let mod = false;
+              if (pkg.exports) {
+                if (pkg.exports["."] && !pkg.exports["."].default) {
+                  pkg.exports["."].default = "./lib/index.js";
+                  mod = true;
+                }
+                if (pkg.exports["./*"] && !pkg.exports["./*"].default) {
+                  pkg.exports["./*"].default = "./lib/*.js";
+                  mod = true;
+                }
+              }
+              if (mod) {
+                writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n");
+                console.log("Patched @react-pdf/hyphenate exports at " + pkgPath);
+              }
+            }
+          } else if (
+            entry.name === "@react-pdf" ||
+            entry.name === "node_modules" ||
+            entry.name.startsWith(".pnpm")
+          ) {
+            patchHyphenate(full);
+          }
+        }
+      }
+    } catch {}
+  }
+  patchHyphenate(resolve(root, "node_modules"));
+} catch {}

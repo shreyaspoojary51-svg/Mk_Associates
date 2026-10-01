@@ -138,8 +138,10 @@ export const formatINR = (value: number) =>
   }).format(value);
 export const formatLakhs = (value: number) =>
   `₹${(value / 100000).toFixed(2)} lakh`;
-export function whatsappLink(summary: string): string | null {
+export function whatsappLink(summary: string): string {
   const configured = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.trim();
-  if (!configured || !/^\+?[1-9]\d{7,14}$/.test(configured)) return null;
-  return `https://wa.me/${configured.replace(/^\+/, "")}?text=${encodeURIComponent(summary)}`;
+  if (configured && /^\+?[1-9]\d{7,14}$/.test(configured)) {
+    return `https://wa.me/${configured.replace(/^\+/, "")}?text=${encodeURIComponent(summary)}`;
+  }
+  return `https://api.whatsapp.com/send?text=${encodeURIComponent(summary)}`;
 }

@@ -423,7 +423,8 @@ export async function downloadProposal(
       }
     }
     return { ok: true, data: pdf.toString("base64"), emailStatus };
-  } catch {
+  } catch (err) {
+    console.error("PDF generation failed:", err);
     return {
       ok: false,
       error: "Your PDF could not be generated. Please try again.",

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useTransition } from "react";
 import { downloadProposal } from "@/app/actions";
-import type { EstimateInput } from "@/lib/estimate";
+import { whatsappLink, type EstimateInput } from "@/lib/estimate";
 import type { DesignBrief } from "@/lib/lead-schema";
 import s from "./tools.module.css";
 import AntiSpam from "./AntiSpam";
@@ -23,24 +23,76 @@ export default function ProposalDownload({
     setMessage("");
     startTransition(async () => {
       try {
-        const result = await downloadProposal({
-          estimate,
-          brief,
-          email,
-          consent,
-          verificationToken,
-        });
-        setVerificationRevision((v) => v + 1);
-        if (!result.ok || !result.data) {
-          setMessage(result.error || "Unable to create your PDF.");
+        let blob: Blob | null = null;
+        let emailMsg = "Your planning brief has been downloaded.";
+
+        // If email was provided, run the server action which also handles Resend dispatch
+        if (email) {
+          const result = await downloadProposal({
+            estimate,
+            brief,
+            email,
+            consent,
+            verificationToken,
+          });
+          setVerificationRevision((v) => v + 1);
+          if (result.ok && result.data) {
+            const bytes = Uint8Array.from(atob(result.data), (c) =>
+              c.charCodeAt(0),
+            );
+            blob = new Blob([bytes], { type: "application/pdf" });
+            emailMsg =
+              result.emailStatus === "sent"
+                ? "PDF downloaded. The email provider accepted your requested copy; inbox delivery is not guaranteed."
+                : result.emailStatus === "verification-required"
+                  ? "PDF downloaded. Email was not sent: configured anti-spam verification is required."
+                  : result.emailStatus === "rate-limited"
+                    ? "PDF downloaded. Email limit reached; no email was sent. Please wait one hour."
+                    : result.emailStatus === "failed"
+                      ? "PDF downloaded, but the email copy could not be sent."
+                      : result.emailStatus === "not-configured"
+                        ? "PDF downloaded. Email is not configured; no email was sent."
+                        : "Your planning brief has been downloaded.";
+          } else {
+            setMessage(result.error || "Unable to create your PDF.");
+            return;
+          }
+        } else {
+          // Direct fast binary stream from /api/proposal-pdf
+          const res = await fetch("/api/proposal-pdf", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ estimate, brief }),
+          });
+
+          if (res.ok) {
+            blob = await res.blob();
+          } else {
+            // Fallback to server action
+            const result = await downloadProposal({
+              estimate,
+              brief,
+              email: "",
+              consent: false,
+            });
+            if (result.ok && result.data) {
+              const bytes = Uint8Array.from(atob(result.data), (c) =>
+                c.charCodeAt(0),
+              );
+              blob = new Blob([bytes], { type: "application/pdf" });
+            } else {
+              setMessage(result.error || "Unable to create your PDF.");
+              return;
+            }
+          }
+        }
+
+        if (!blob) {
+          setMessage("Unable to generate your PDF. Please try again.");
           return;
         }
-        const bytes = Uint8Array.from(atob(result.data), (c) =>
-          c.charCodeAt(0),
-        );
-        const url = URL.createObjectURL(
-          new Blob([bytes], { type: "application/pdf" }),
-        );
+
+        const url = URL.createObjectURL(blob);
         const anchor = document.createElement("a");
         anchor.href = url;
         anchor.download = "mk-associates-planning-brief.pdf";
@@ -48,21 +100,22 @@ export default function ProposalDownload({
         anchor.click();
         anchor.remove();
         window.setTimeout(() => URL.revokeObjectURL(url), 30000);
-        setMessage(
-          result.emailStatus === "sent"
-            ? "PDF downloaded. The email provider accepted your requested copy; inbox delivery is not guaranteed."
-            : result.emailStatus === "verification-required"
-              ? "PDF downloaded. Email was not sent: configured anti-spam verification is required."
-              : result.emailStatus === "rate-limited"
-                ? "PDF downloaded. Email limit reached; no email was sent. Please wait one hour."
-                : result.emailStatus === "failed"
-                  ? "PDF downloaded, but the email copy could not be sent."
-                  : result.emailStatus === "not-configured"
-                    ? "PDF downloaded. Email is not configured; no email was sent."
-                    : "Your planning brief has been downloaded.",
-        );
+        setMessage(emailMsg);
       } catch {
-        setMessage("The PDF service is unavailable. Please try again.");
+        // Fallback: direct GET link trigger
+        try {
+          const directUrl = `/api/proposal-pdf?room=${encodeURIComponent(brief?.room || "")}&palette=${encodeURIComponent(brief?.palette || "")}&material=${encodeURIComponent(brief?.material || "")}`;
+          const anchor = document.createElement("a");
+          anchor.href = directUrl;
+          anchor.download = "mk-associates-planning-brief.pdf";
+          anchor.target = "_blank";
+          document.body.appendChild(anchor);
+          anchor.click();
+          anchor.remove();
+          setMessage("Your planning brief has been downloaded.");
+        } catch {
+          setMessage("The PDF service is unavailable. Please try again.");
+        }
       }
     });
   }
@@ -118,6 +171,18 @@ export default function ProposalDownload({
         >
           {pending ? "Preparing your brief…" : "Download planning PDF ↓"}
         </button>
+        <a
+          className={`button-outline ${s.secondary}`}
+          href={whatsappLink(
+            brief
+              ? `Hello MK Associates, I configured my interior planning brief on your website:\n• Room: ${brief.room}\n• Palette: ${brief.palette}\n• Material: ${brief.material}${estimate ? `\n• Area: ${estimate.area} sq ft (${estimate.tier.toUpperCase()})` : ""}\n\nI have the 1-page PDF ready. I'd love to discuss this with your team!`
+              : `Hello MK Associates, I configured an interior planning estimate on your website${estimate ? ` for ${estimate.area} sq ft (${estimate.tier.toUpperCase()})` : ""}. I'd love to discuss this with your team!`,
+          )}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Share on WhatsApp ↗
+        </a>
       </div>
       <p className={s.note} role="status" aria-live="polite">
         {message}

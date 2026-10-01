@@ -89,10 +89,15 @@ export function ProjectCards({ items }: { items: Project[] }) {
             </div>
             <div className="meta">
               <span>
-                {project.locality} · {project.category}
+                {project.locality}
+                {project.area ? ` · ${project.area}` : ""}
               </span>
               <span>
-                {project.concept ? "Concept study" : "Published project"}
+                {project.investment
+                  ? project.investment.replace("Illustrative scope · ", "")
+                  : project.concept
+                    ? "Concept study"
+                    : "Published project"}
               </span>
             </div>
             <h3>{project.title}</h3>

@@ -89,7 +89,10 @@ export default async function LocalityPage({ params }: Props) {
           <h2 className="section-heading">A few possible directions.</h2>
           <ProjectCards
             items={projects.filter(
-              (project) => project.locality === locality.name,
+              (project) =>
+                project.locality.toLowerCase().includes(locality.name.toLowerCase()) ||
+                locality.name.toLowerCase().includes(project.locality.toLowerCase()) ||
+                (locality.slug === "lokhandwala" && project.locality.includes("Andheri")),
             )}
           />
         </div>

@@ -183,6 +183,12 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
                       {project.area}
                     </>
                   ) : null}
+                  {project.investment ? (
+                    <>
+                      <span aria-hidden="true"> · </span>
+                      {project.investment.replace("Illustrative scope · ", "")}
+                    </>
+                  ) : null}
                 </p>
               </div>
             </motion.article>
